@@ -9,6 +9,10 @@ describe("Portfolio config", () => {
     expect(portfolio.theme.colorScheme).toBe("dark");
   });
 
+  it("uses English page metadata", () => {
+    expect(portfolio.meta.language).toBe("en");
+  });
+
   it("lists projects, each with a description", () => {
     expect(portfolio.projects.items.length).toBeGreaterThan(0);
     for (const pr of portfolio.projects.items) {

@@ -1,29 +1,53 @@
-# Welcome to your Lovable project
+# kehlchen — developer portfolio
 
-This project was built with [Lovable](https://lovable.dev).
+A minimal, dark project list built with TanStack Start, React, TypeScript, and Tailwind CSS.
 
-## Build with Lovable
+## Edit everything
 
-Open your project in the [Lovable editor](https://lovable.dev) and keep building.
+All page content, project links, colors, fonts, metadata, and the footer live in one file:
 
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: connect the project to GitHub and every change made in Lovable is committed straight to your repository.
-- **Full ownership**: this code is yours. Push to your repository and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+```text
+src/config/portfolio.ts
 ```
 
-## Built with
+Each project has a name, description, GitHub URL, binary download URL, displayed file name, version, and language. Set an optional value to `""` to hide it. Projects appear on the page in their array order.
 
-- TanStack Start
-- TypeScript
-- React
-- Tailwind CSS
+## Add a project with Go
+
+With Go installed, run this command from the project root:
+
+```sh
+go run scripts/add-project.go
+```
+
+The interactive command asks for:
+
+1. Project name and short description
+2. GitHub URL
+3. Binary download URL and displayed file name
+4. Optional version and language/stack
+
+It suggests GitHub and download URLs based on your existing configuration. Before saving, it shows a summary and asks for confirmation. It rejects duplicate project names and invalid URLs, then inserts the new project at the top of `projects.items`.
+
+To use a different config file:
+
+```sh
+go run scripts/add-project.go -config path/to/portfolio.ts
+```
+
+The script uses only the Go standard library. No `go.mod`, code generation, or additional dependencies are required.
+
+## Run locally
+
+```sh
+bun install
+bun run dev
+```
+
+## Tests
+
+```sh
+bun run test
+# The Go command can also be tested without creating a Go module:
+go test scripts/add-project.go scripts/add-project_test.go
+```

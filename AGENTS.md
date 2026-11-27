@@ -30,3 +30,4 @@ use the editor.
 <!-- LOVABLE:END -->
 
 - All portfolio content, colors and fonts live in src/config/portfolio.ts; components read only from it. Why: user wants everything editable in one separate file.
+- Add projects through the standard-library-only Go helper in scripts/add-project.go, which edits the config insertion marker atomically; keep the helper independent of the web runtime. Why: project creation should work locally with one command and no extra setup.
