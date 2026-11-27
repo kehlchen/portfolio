@@ -1,147 +1,130 @@
 /**
  * ============================================================
  *  PORTFOLIO-KONFIGURATION – hier lässt sich ALLES anpassen.
- *  Texte, Farben, Schriften, Reihenfolge, Sichtbarkeit, Links.
+ *  Seite: minimal, dunkel, nur Projekte.
+ *  Texte, Farben, Schriften, Links, Binary-Downloads.
  *  Speichern → Seite aktualisiert sich automatisch.
  * ============================================================
  */
 
+export type Project = {
+  name: string;
+  /** Ein Satz, was das Tool tut. */
+  description: string;
+  /** Link zum Repo. "" = Repo-Link ausblenden. */
+  github: string;
+  /** Binary-Download (z. B. GitHub-Release). "" = Download ausblenden. */
+  download: string;
+  /** Dateiname unter dem Download, z. B. "tool-linux-x64". */
+  file: string;
+  /** Versionsnummer, z. B. "0.6.2". "" = ausblenden. */
+  version: string;
+  /** Sprache / Stack, z. B. "Go". "" = ausblenden. */
+  language: string;
+};
+
 export const portfolio = {
   // ---------- Seiten-Infos (Browser-Tab, Google, Teilen) ----------
   meta: {
-    title: "Mara Lindqvist – Designerin & Entwicklerin",
-    description: "Portfolio von Mara Lindqvist: Produktdesign, Web-Entwicklung und Markenauftritte.",
+    title: "kehlchen – kleine Werkzeuge",
+    description:
+      "Kommandozeilen-Werkzeuge von kehlchen: Quellcode auf GitHub, Binary zum Herunterladen.",
     language: "de",
   },
 
   // ---------- Farben (oklch-Format: Helligkeit Sättigung Farbton) ----------
   theme: {
-    background: "oklch(0.97 0.012 85)",
-    foreground: "oklch(0.18 0.02 60)",
-    card: "oklch(0.99 0.006 85)",
-    muted: "oklch(0.92 0.015 85)",
-    mutedForeground: "oklch(0.45 0.02 60)",
-    primary: "oklch(0.55 0.19 35)", // Akzentfarbe
-    primaryForeground: "oklch(0.98 0.01 85)",
-    border: "oklch(0.85 0.02 80)",
-    radius: "0.25rem", // Eckenrundung: "0rem" = eckig, "1.5rem" = sehr rund
+    colorScheme: "dark" as const, // "dark" oder "light"
+    background: "oklch(0.145 0.012 265)",
+    foreground: "oklch(0.93 0.01 265)",
+    card: "oklch(0.185 0.014 265)",
+    muted: "oklch(0.235 0.014 265)",
+    mutedForeground: "oklch(0.66 0.018 265)",
+    primary: "oklch(0.82 0.16 150)", // Akzentfarbe
+    primaryForeground: "oklch(0.16 0.02 265)",
+    border: "oklch(0.29 0.014 265)",
+    radius: "0.375rem", // Eckenrundung: "0rem" = eckig, "1.5rem" = sehr rund
   },
 
   // ---------- Schriften (beliebige Google Fonts) ----------
   fonts: {
-    heading: "Fraunces",
-    body: "Inter",
-    // Link von fonts.google.com (passend zu den Namen oben)
+    heading: "JetBrains Mono",
+    body: "IBM Plex Sans",
     googleFontsUrl:
-      "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,700&family=Inter:wght@400;500;600&display=swap",
+      "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500&family=JetBrains+Mono:wght@400;500;700&display=swap",
   },
 
-  // ---------- Navigation ----------
-  nav: {
-    logo: "M.L.",
-    // Reihenfolge = Reihenfolge der Abschnitte auf der Seite
-    // Mögliche Werte: "about", "projects", "skills", "experience", "contact"
-    sections: ["about", "projects", "skills", "experience", "contact"] as const,
-    labels: {
-      about: "Über mich",
-      projects: "Projekte",
-      skills: "Können",
-      experience: "Werdegang",
-      contact: "Kontakt",
-    },
-  },
-
-  // ---------- Startbereich ----------
-  hero: {
-    show: true,
-    greeting: "Hallo, ich bin",
-    name: "Mara Lindqvist",
-    role: "Designerin & Entwicklerin aus Hamburg",
-    tagline: "Ich gestalte digitale Produkte, die klar, ruhig und nützlich sind.",
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=800&q=80", // "" = kein Bild
-    primaryButton: { label: "Projekte ansehen", href: "#projects" },
-    secondaryButton: { label: "Kontakt aufnehmen", href: "#contact" },
-  },
-
-  // ---------- Über mich ----------
-  about: {
-    title: "Über mich",
-    paragraphs: [
-      "Seit über acht Jahren arbeite ich an der Schnittstelle von Design und Code – für Start-ups, Agenturen und Kulturinstitutionen.",
-      "Mein Ansatz: zuhören, reduzieren, sorgfältig umsetzen. Gute Gestaltung fällt nicht auf – sie funktioniert einfach.",
-    ],
-    facts: [
-      { value: "8+", label: "Jahre Erfahrung" },
-      { value: "60+", label: "Projekte" },
-      { value: "25", label: "Kund:innen" },
+  // ---------- Kopfzeile ----------
+  header: {
+    prompt: "$ whoami", // kleine Terminal-Zeile über dem Namen
+    name: "kehlchen",
+    tagline:
+      "Ich schreibe kleine Werkzeuge für die Kommandozeile. Alles offen, alles als Binary.",
+    links: [
+      { label: "github", href: "https://github.com/kehlchen" },
+      { label: "mail", href: "mailto:deineadresse@example.com" }, // TODO: deine echte Adresse eintragen
     ],
   },
 
-  // ---------- Projekte ----------
+  // ---------- Projekte (einziger Inhalt der Seite) ----------
   projects: {
-    title: "Ausgewählte Projekte",
+    label: "projects",
     items: [
       {
-        title: "Nordlicht Reisen",
-        description: "Buchungsplattform mit neuem Markenauftritt und 40 % mehr Anfragen.",
-        image: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=80",
-        tags: ["Branding", "Web"],
-        link: "https://example.com",
+        name: "tidsprakt",
+        description: "Zeitzonen umrechnen im Terminal, ohne Rechner und ohne Web-Tab.",
+        github: "https://github.com/kehlchen/tidsprakt",
+        download:
+          "https://github.com/kehlchen/tidsprakt/releases/latest/download/tidsprakt-linux-x64",
+        file: "tidsprakt-linux-x64",
+        version: "0.6.2",
+        language: "Go",
       },
       {
-        title: "Kaffeerösterei Bohne",
-        description: "Online-Shop und Verpackungsdesign für eine kleine Rösterei.",
-        image: "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=900&q=80",
-        tags: ["E-Commerce", "Design"],
-        link: "https://example.com",
+        name: "grainstore",
+        description: "Winziger Proxy vor S3: ein Ordner rein, alles andere erledigt er.",
+        github: "https://github.com/kehlchen/grainstore",
+        download:
+          "https://github.com/kehlchen/grainstore/releases/latest/download/grainstore-linux-x64",
+        file: "grainstore-linux-x64",
+        version: "1.4.0",
+        language: "Rust",
       },
       {
-        title: "Stadtarchiv App",
-        description: "Mobile App, die historische Fotos an ihren Originalorten zeigt.",
-        image: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=900&q=80",
-        tags: ["App", "UX"],
-        link: "",
+        name: "mdserve",
+        description: "Markdown-Ordner als Seite ansehen – kein Build, kein Node-Setup.",
+        github: "https://github.com/kehlchen/mdserve",
+        download:
+          "https://github.com/kehlchen/mdserve/releases/latest/download/mdserve-linux-x64",
+        file: "mdserve-linux-x64",
+        version: "2.1.0",
+        language: "Go",
       },
-    ],
-  },
-
-  // ---------- Können ----------
-  skills: {
-    title: "Was ich kann",
-    groups: [
-      { name: "Design", items: ["Figma", "Markenentwicklung", "UX-Research", "Typografie"] },
-      { name: "Entwicklung", items: ["React", "TypeScript", "CSS", "Barrierefreiheit"] },
-      { name: "Weiteres", items: ["Workshops", "Projektleitung", "Fotografie"] },
-    ],
-  },
-
-  // ---------- Werdegang ----------
-  experience: {
-    title: "Werdegang",
-    items: [
-      { period: "2022 – heute", role: "Selbstständig", place: "Hamburg", text: "Design & Entwicklung für eigene Kund:innen." },
-      { period: "2018 – 2022", role: "Senior Designerin", place: "Studio Fjord", text: "Leitung von Web- und Markenprojekten." },
-      { period: "2016 – 2018", role: "Junior Entwicklerin", place: "Pixelwerk GmbH", text: "Frontend-Entwicklung für Agenturkunden." },
-    ],
-  },
-
-  // ---------- Kontakt ----------
-  contact: {
-    title: "Lass uns sprechen",
-    text: "Du hast ein Projekt im Kopf? Schreib mir – ich antworte meist innerhalb eines Tages.",
-    email: "hallo@maralindqvist.de",
-    buttonLabel: "E-Mail schreiben",
-    socials: [
-      { label: "LinkedIn", href: "https://linkedin.com" },
-      { label: "GitHub", href: "https://github.com" },
-      { label: "Instagram", href: "https://instagram.com" },
+      {
+        name: "portcheck",
+        description: "Zeigt, welcher Prozess einen Port belegt, und macht ihn auf Wunsch frei.",
+        github: "https://github.com/kehlchen/portcheck",
+        download:
+          "https://github.com/kehlchen/portcheck/releases/latest/download/portcheck-linux-x64",
+        file: "portcheck-linux-x64",
+        version: "0.3.1",
+        language: "Go",
+      },
+      {
+        name: "qrx",
+        description: "QR-Codes direkt im Terminal, als ASCII oder als PNG-Datei.",
+        github: "https://github.com/kehlchen/qrx",
+        download:
+          "https://github.com/kehlchen/qrx/releases/latest/download/qrx-linux-x64",
+        file: "qrx-linux-x64",
+        version: "1.0.3",
+        language: "Rust",
+      },
     ],
   },
 
   // ---------- Fußzeile ----------
   footer: {
-    text: "© 2026 Mara Lindqvist. Alle Rechte vorbehalten.",
+    text: "© 2026 kehlchen · alles unter MIT-Lizenz",
   },
 };
-
-export type SectionId = (typeof portfolio.nav.sections)[number];

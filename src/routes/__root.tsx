@@ -11,6 +11,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { portfolio } from "../config/portfolio";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
 function NotFoundComponent() {
@@ -106,7 +107,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html
+      lang={portfolio.meta.language}
+      style={{
+        background: portfolio.theme.background,
+        colorScheme: portfolio.theme.colorScheme,
+      }}
+    >
       <head>
         <HeadContent />
       </head>

@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type { CSSProperties } from "react";
-import { portfolio as p, type SectionId } from "../config/portfolio";
+import { portfolio as p, type Project } from "../config/portfolio";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: p.meta.title },
       { property: "og:description", content: p.meta.description },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [{ rel: "stylesheet", href: p.fonts.googleFontsUrl }],
   }),
@@ -28,167 +28,112 @@ const vars = {
   "--primary-foreground": t.primaryForeground,
   "--border": t.border,
   "--radius": t.radius,
+  colorScheme: t.colorScheme,
   fontFamily: `"${p.fonts.body}", sans-serif`,
 } as CSSProperties;
-const heading: CSSProperties = { fontFamily: `"${p.fonts.heading}", serif` };
 
-function Title({ children }: { children: string }) {
-  return (
-    <h2 style={heading} className="mb-10 text-4xl font-bold md:text-5xl">
-      {children}
-    </h2>
-  );
-}
+const mono: CSSProperties = { fontFamily: `"${p.fonts.heading}", monospace` };
 
-function About() {
+const linkCls =
+  "underline-offset-4 hover:text-primary hover:underline transition-colors";
+
+function ProjectRow({ pr }: { pr: Project }) {
+  const meta = [pr.version && `v${pr.version}`, pr.language].filter(Boolean).join(" · ");
   return (
-    <section id="about" className="mx-auto max-w-5xl px-6 py-24">
-      <Title>{p.about.title}</Title>
-      <div className="grid gap-10 md:grid-cols-[2fr_1fr]">
-        <div className="space-y-4 text-lg leading-relaxed text-muted-foreground">
-          {p.about.paragraphs.map((x) => <p key={x}>{x}</p>)}
-        </div>
-        <div className="grid gap-4">
-          {p.about.facts.map((f) => (
-            <div key={f.label} className="border-l-2 border-primary pl-4">
-              <div style={heading} className="text-3xl font-bold text-primary">{f.value}</div>
-              <div className="text-sm text-muted-foreground">{f.label}</div>
-            </div>
-          ))}
-        </div>
+    <li className="border-t border-border py-7 first:border-t-0 first:pt-0">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+        <h3 style={mono} className="text-base font-bold tracking-tight">
+          {pr.name}
+          {meta && (
+            <span className="ml-3 text-xs font-normal text-muted-foreground">{meta}</span>
+          )}
+        </h3>
       </div>
-    </section>
-  );
-}
 
-function Projects() {
-  return (
-    <section id="projects" className="mx-auto max-w-6xl px-6 py-24">
-      <Title>{p.projects.title}</Title>
-      <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-        {p.projects.items.map((pr) => {
-          const inner = (
-            <>
-              {pr.image && (
-                <img src={pr.image} alt={pr.title} loading="lazy" className="aspect-[4/3] w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-              )}
-              <div className="p-5">
-                <div className="mb-2 flex flex-wrap gap-2">
-                  {pr.tags.map((tag) => (
-                    <span key={tag} className="rounded-sm bg-muted px-2 py-0.5 text-xs text-muted-foreground">{tag}</span>
-                  ))}
-                </div>
-                <h3 style={heading} className="text-xl font-bold group-hover:text-primary">{pr.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{pr.description}</p>
-              </div>
-            </>
-          );
-          const cls = "group block overflow-hidden rounded-lg border bg-card";
-          return pr.link ? (
-            <a key={pr.title} href={pr.link} target="_blank" rel="noreferrer" className={cls}>{inner}</a>
-          ) : (
-            <div key={pr.title} className={cls}>{inner}</div>
-          );
-        })}
+      <p className="mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+        {pr.description}
+      </p>
+
+      <div style={mono} className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2 text-xs">
+        {pr.github && (
+          <a
+            href={pr.github}
+            target="_blank"
+            rel="noreferrer"
+            className={`${linkCls} text-muted-foreground`}
+          >
+            github ↗
+          </a>
+        )}
+        {pr.download && (
+          <a
+            href={pr.download}
+            className={`${linkCls} text-primary`}
+            download={pr.file || true}
+          >
+            ↓ {pr.file || "binary"}
+          </a>
+        )}
       </div>
-    </section>
+    </li>
   );
 }
-
-function Skills() {
-  return (
-    <section id="skills" className="mx-auto max-w-5xl px-6 py-24">
-      <Title>{p.skills.title}</Title>
-      <div className="grid gap-8 md:grid-cols-3">
-        {p.skills.groups.map((g) => (
-          <div key={g.name}>
-            <h3 className="mb-3 text-sm font-semibold uppercase tracking-widest text-primary">{g.name}</h3>
-            <ul className="space-y-2">
-              {g.items.map((i) => <li key={i} className="border-b pb-2">{i}</li>)}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Experience() {
-  return (
-    <section id="experience" className="mx-auto max-w-5xl px-6 py-24">
-      <Title>{p.experience.title}</Title>
-      <div className="space-y-8">
-        {p.experience.items.map((e) => (
-          <div key={e.period + e.role} className="grid gap-2 border-t pt-6 md:grid-cols-[200px_1fr]">
-            <div className="text-sm text-muted-foreground">{e.period}</div>
-            <div>
-              <h3 style={heading} className="text-xl font-bold">{e.role} <span className="text-primary">· {e.place}</span></h3>
-              <p className="mt-1 text-muted-foreground">{e.text}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-function Contact() {
-  const c = p.contact;
-  return (
-    <section id="contact" className="mx-auto max-w-3xl px-6 py-24 text-center">
-      <h2 style={heading} className="text-4xl font-bold md:text-6xl">{c.title}</h2>
-      <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">{c.text}</p>
-      <a href={`mailto:${c.email}`} className="mt-8 inline-block rounded-md bg-primary px-8 py-3 font-medium text-primary-foreground hover:opacity-90">{c.buttonLabel}</a>
-      <p className="mt-4 text-sm text-muted-foreground">{c.email}</p>
-      <div className="mt-8 flex flex-wrap justify-center gap-6">
-        {c.socials.map((s) => (
-          <a key={s.label} href={s.href} target="_blank" rel="noreferrer" className="underline-offset-4 hover:text-primary hover:underline">{s.label}</a>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-const sectionMap: Record<SectionId, () => React.JSX.Element> = {
-  about: About, projects: Projects, skills: Skills, experience: Experience, contact: Contact,
-};
 
 function Index() {
-  const h = p.hero;
+  const h = p.header;
   return (
     <div style={vars} className="min-h-screen bg-background text-foreground">
-      <header className="sticky top-0 z-10 border-b bg-background/90 backdrop-blur">
-        <nav className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
-          <a href="#" style={heading} className="text-xl font-bold">{p.nav.logo}</a>
-          <div className="hidden gap-6 text-sm md:flex">
-            {p.nav.sections.map((s) => (
-              <a key={s} href={`#${s}`} className="hover:text-primary">{p.nav.labels[s]}</a>
+      <header className="border-b border-border">
+        <div className="mx-auto max-w-3xl px-6 py-12">
+          {h.prompt && (
+            <p style={mono} className="text-xs text-primary/70">
+              {h.prompt}
+            </p>
+          )}
+          <h1 style={mono} className="mt-3 text-2xl font-bold tracking-tight">
+            {h.name}
+          </h1>
+          <p className="mt-3 max-w-lg text-sm leading-relaxed text-muted-foreground">
+            {h.tagline}
+          </p>
+          <div style={mono} className="mt-5 flex flex-wrap gap-x-6 gap-y-2 text-xs">
+            {h.links.map((l) => (
+              <a
+                key={l.label}
+                href={l.href}
+                target="_blank"
+                rel="noreferrer"
+                className={`${linkCls} text-muted-foreground`}
+              >
+                {l.label}
+              </a>
             ))}
           </div>
-        </nav>
+        </div>
       </header>
-      {h.show && (
-        <section className="mx-auto grid max-w-6xl items-center gap-12 px-6 py-20 md:grid-cols-[3fr_2fr] md:py-32">
-          <div>
-            <p className="mb-3 text-primary">{h.greeting}</p>
-            <h1 style={heading} className="text-5xl font-bold leading-tight md:text-7xl">{h.name}</h1>
-            <p className="mt-4 text-xl font-medium">{h.role}</p>
-            <p className="mt-4 max-w-lg text-lg text-muted-foreground">{h.tagline}</p>
-            <div className="mt-8 flex flex-wrap gap-4">
-              <a href={h.primaryButton.href} className="rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground hover:opacity-90">{h.primaryButton.label}</a>
-              <a href={h.secondaryButton.href} className="rounded-md border px-6 py-3 font-medium hover:border-primary hover:text-primary">{h.secondaryButton.label}</a>
-            </div>
-          </div>
-          {h.image && <img src={h.image} alt={h.name} fetchPriority="high" className="aspect-[4/5] w-full rounded-lg object-cover" />}
-        </section>
-      )}
-      <main>
-        {p.nav.sections.map((s) => {
-          const C = sectionMap[s];
-          return <C key={s} />;
-        })}
+
+      <main className="mx-auto max-w-3xl px-6 py-12">
+        <h2
+          style={mono}
+          className="mb-8 text-xs uppercase tracking-[0.25em] text-muted-foreground"
+        >
+          {p.projects.label}
+        </h2>
+        <ul>
+          {p.projects.items.map((pr) => (
+            <ProjectRow key={pr.name} pr={pr} />
+          ))}
+        </ul>
       </main>
-      <footer className="border-t py-8 text-center text-sm text-muted-foreground">{p.footer.text}</footer>
+
+      <footer className="border-t border-border">
+        <div
+          style={mono}
+          className="mx-auto max-w-3xl px-6 py-8 text-xs text-muted-foreground"
+        >
+          {p.footer.text}
+        </div>
+      </footer>
     </div>
   );
 }
